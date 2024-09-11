@@ -1,0 +1,160 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.10 (swiftlang-5.10.0.13 clang-1500.3.9.4)
+// swift-module-flags: -target x86_64-apple-ios16.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name GFetchKitFramework
+import Foundation
+@_exported import GFetchKitFramework
+import Swift
+import SystemConfiguration
+import UIKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+final public class DependenyManager {
+  public static let shared: GFetchKitFramework.DependenyManager
+  final public var container: GFetchKitFramework.GContainer
+  public init()
+  final public func resolve<T>(type serviceType: T.Type) -> T?
+  @objc deinit
+}
+@frozen public enum ObjectScope {
+  case singleton
+  case transient
+  public static func == (a: GFetchKitFramework.ObjectScope, b: GFetchKitFramework.ObjectScope) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public protocol ServiceRegistrationProtocol {
+  var scope: GFetchKitFramework.ObjectScope { get }
+  var factory: (Any?) -> Any { get }
+}
+public struct ServiceRegistration : GFetchKitFramework.ServiceRegistrationProtocol {
+  public var scope: GFetchKitFramework.ObjectScope
+  public var factory: (Any?) -> Any
+}
+public protocol APICacheManagerProtocol {
+  func setCacheData(with url: Foundation.URL?, data: Foundation.Data)
+  func getCacheData(with url: Foundation.URL?) -> Foundation.NSData?
+}
+@_hasMissingDesignatedInitializers final public class APICacheManager : GFetchKitFramework.APICacheManagerProtocol {
+  final public func setCacheData(with url: Foundation.URL?, data: Foundation.Data)
+  final public func getCacheData(with url: Foundation.URL?) -> Foundation.NSData?
+  @objc deinit
+}
+final public class URLRequestBuilder {
+  public init()
+  final public func urlRequestBuilder(url: Swift.String, urlPath: Swift.String?, method: Swift.String, queryItems: [Foundation.URLQueryItem]?, headers: [Swift.String : Swift.String]?, bodyValue: Foundation.Data?) -> Foundation.URLRequest?
+  @objc deinit
+}
+public protocol ResponseParserProtocol {
+  func dataParser<T>(with data: Foundation.Data, parsingModel: T.Type, completion: @escaping (Swift.Result<T, GFetchKitFramework.NetworkError>) -> Swift.Void) where T : Swift.Decodable, T : Swift.Encodable
+}
+final public class ResponseParser : GFetchKitFramework.ResponseParserProtocol {
+  public init(decoder: Foundation.JSONDecoder = JSONDecoder())
+  final public func dataParser<T>(with data: Foundation.Data, parsingModel: T.Type, completion: @escaping (Swift.Result<T, GFetchKitFramework.NetworkError>) -> Swift.Void) where T : Swift.Decodable, T : Swift.Encodable
+  @objc deinit
+}
+public protocol NetworkLoggerProtocol {
+  func log(request: Foundation.URLRequest)
+  func log(response: Foundation.URLResponse?, data: Foundation.Data?)
+  func log(httpResponse: Foundation.HTTPURLResponse?, data: Foundation.Data?)
+}
+final public class NetworkLogger : GFetchKitFramework.NetworkLoggerProtocol {
+  public init()
+  final public func log(request: Foundation.URLRequest)
+  final public func log(response: Foundation.URLResponse?, data: Foundation.Data?)
+  final public func log(httpResponse: Foundation.HTTPURLResponse?, data: Foundation.Data?)
+  @objc deinit
+}
+public protocol ResponseErrorProtocol {
+  func parseError(statusCode: Swift.Int) -> GFetchKitFramework.NetworkError
+}
+@frozen public enum HTTPMethod : Swift.String {
+  case get
+  case post
+  case put
+  case patch
+  case delete
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@frozen public enum Endpoint {
+  case fetch(baseURL: Swift.String, urlPath: Swift.String?, method: GFetchKitFramework.HTTPMethod, queryParameters: [Foundation.URLQueryItem]?, headers: [Swift.String : Swift.String]?, bodyValue: [Swift.String : Any]?)
+  public func urlRequestBuilder() -> Foundation.URLRequest?
+}
+public protocol ReachabilityHelperProtocol {
+  func isConnectedToNetwork() -> Swift.Bool
+}
+public protocol GContainerProtocol {
+  var registrations: [Swift.String : GFetchKitFramework.ServiceRegistration] { get }
+  var singletons: [Swift.String : Any] { get }
+  func register<T>(_ type: T.Type, scope: GFetchKitFramework.ObjectScope, factory: @escaping (Any?) -> T)
+  func resolve<T>(_ type: T.Type, with parameter: Any?) -> T?
+  func clearMemory()
+  func applicationDidEnterBackground()
+  func applicationWillTerminate()
+}
+final public class GContainer : GFetchKitFramework.GContainerProtocol {
+  final public var registrations: [Swift.String : GFetchKitFramework.ServiceRegistration] {
+    get
+  }
+  final public var singletons: [Swift.String : Any] {
+    get
+  }
+  public init()
+  @objc deinit
+  final public func register<T>(_ type: T.Type, scope: GFetchKitFramework.ObjectScope, factory: @escaping (Any?) -> T)
+  final public func resolve<T>(_ type: T.Type, with parameter: Any? = nil) -> T?
+  final public func clearMemory()
+  @objc final public func applicationDidEnterBackground()
+  @objc final public func applicationWillTerminate()
+}
+public protocol URLSessionProviderProtocol {
+  var session: Foundation.URLSession { get }
+  init(session: Foundation.URLSession)
+  func sessionDataTask(with urlRequest: Foundation.URLRequest, completionHandler: @escaping (Foundation.Data?, Foundation.URLResponse?, (any Swift.Error)?) -> Swift.Void) -> Foundation.URLSessionDataTask
+}
+final public class URLSessionProvider : GFetchKitFramework.URLSessionProviderProtocol {
+  final public var session: Foundation.URLSession
+  public init(session: Foundation.URLSession = .shared)
+  final public func sessionDataTask(with urlRequest: Foundation.URLRequest, completionHandler: @escaping (Foundation.Data?, Foundation.URLResponse?, (any Swift.Error)?) -> Swift.Void) -> Foundation.URLSessionDataTask
+  @objc deinit
+}
+@frozen public enum NetworkError : Swift.Error {
+  case invalidURL
+  case invalidRequest
+  case invalidResponse
+  case statusCode(Swift.Int)
+  case noData
+  case decodeError
+  case networkError(any Swift.Error)
+  case clientError(Swift.Int)
+  case serverError(Swift.Int)
+  case unknownError
+  case ethernetError
+}
+public protocol APIClientProtocol {
+  func execute<T>(with endpoint: GFetchKitFramework.Endpoint, parseModel: T.Type, completionHandler: @escaping (Swift.Result<T, GFetchKitFramework.NetworkError>) -> Swift.Void) where T : Swift.Decodable, T : Swift.Encodable
+}
+final public class APIClient : GFetchKitFramework.APIClientProtocol {
+  final public var urlSessionProvider: any GFetchKitFramework.URLSessionProviderProtocol
+  final public var apiCacheManager: any GFetchKitFramework.APICacheManagerProtocol
+  final public var responseParser: any GFetchKitFramework.ResponseParserProtocol
+  final public var networkLogger: any GFetchKitFramework.NetworkLoggerProtocol
+  final public var responseError: any GFetchKitFramework.ResponseErrorProtocol
+  final public var reachabilityHelper: any GFetchKitFramework.ReachabilityHelperProtocol
+  public init(urlSessionProvider: any GFetchKitFramework.URLSessionProviderProtocol = DependenyManager.shared.resolve(type: URLSessionProviderProtocol.self)!, apiCacheManager: any GFetchKitFramework.APICacheManagerProtocol = DependenyManager.shared.resolve(type: APICacheManagerProtocol.self)!, responseParser: any GFetchKitFramework.ResponseParserProtocol = DependenyManager.shared.resolve(type: ResponseParserProtocol.self)!, networkLogger: any GFetchKitFramework.NetworkLoggerProtocol = DependenyManager.shared.resolve(type: NetworkLoggerProtocol.self)!, responseError: any GFetchKitFramework.ResponseErrorProtocol = DependenyManager.shared.resolve(type: ResponseErrorProtocol.self)!, reachabilityHelper: any GFetchKitFramework.ReachabilityHelperProtocol = DependenyManager.shared.resolve(type: ReachabilityHelperProtocol.self)!)
+  final public func execute<T>(with endpoint: GFetchKitFramework.Endpoint, parseModel: T.Type, completionHandler: @escaping (Swift.Result<T, GFetchKitFramework.NetworkError>) -> Swift.Void) where T : Swift.Decodable, T : Swift.Encodable
+  @objc deinit
+}
+extension GFetchKitFramework.ObjectScope : Swift.Equatable {}
+extension GFetchKitFramework.ObjectScope : Swift.Hashable {}
+extension GFetchKitFramework.ObjectScope : Swift.Sendable {}
+extension GFetchKitFramework.HTTPMethod : Swift.Equatable {}
+extension GFetchKitFramework.HTTPMethod : Swift.Hashable {}
+extension GFetchKitFramework.HTTPMethod : Swift.RawRepresentable {}
+extension GFetchKitFramework.HTTPMethod : Swift.Sendable {}

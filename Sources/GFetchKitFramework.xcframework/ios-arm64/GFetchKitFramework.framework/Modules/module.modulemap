@@ -1,0 +1,11 @@
+framework module GFetchKitFramework {
+  umbrella header "GFetchKitFramework.h"
+  export *
+
+  module * { export * }
+}
+
+module GFetchKitFramework.Swift {
+  header "GFetchKitFramework-Swift.h"
+  requires objc
+}
